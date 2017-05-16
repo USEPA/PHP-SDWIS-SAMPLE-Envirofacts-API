@@ -12,7 +12,7 @@
 </style>
 
 <?php
-phpinfo();
+// phpinfo();
 // this method requests XML data from the REST service
 function requestData($url) {
 	$ch = curl_init();
@@ -45,16 +45,15 @@ function requestData($url) {
 // this method displays the XML results in a simple table
 function resultsToTable($results) {
 	$html = "<table border='1' cellspacing='0' cellpadding='2'>\n";
-	$html .= "<tr>\n<th>ID</th>\n<th>Name</th>\n<th>Regulating Agency</th>\n<th>NAICS</th>\n";
-	$html .= "<th>Region</th>\n<th>Geography Type</th>\n<th>State</th>\n<th>Status</th>\n";
-	$html .= "<th>Deactivation Date</th>\n<th>PWS Type</th>\n<th>Souce</th>\n</tr>";
+	$html .= "<tr>\n<th>ID</th>\n<th>Name</th>\n<th>Address</th>\n<th></th>\n";
+	$html .= "<th>Region</th>\n<th>State</th>\n<th>Status</th>\n";
+	$html .= "<th>Deactivation Date</th>\n<th>PWS Type</th>\n</tr>";
 	foreach($results as $object) {
-		$html .= "\n<tr>\n<td>{$object->PWSID}</td>\n<td>{$object->PWSNAME}</td>\n";
-		$html .= "<td>{$object->REGULATINGAGENCYNAME}</td>\n<td>{$object->NAICS}</td>\n";
-		$html .= "<td>{$object->EPA_REGION}</td>\n<td>{$object->GEOGRAPHY_TYPE}</td>\n";
-		$html .= "<td>{$object->STATE}</th>\n<td>{$object->STATUS}</td>\n";
-		$html .= "<td>{$object->PWSDEACTIVATIONDATE}</td>\n<td>{$object->PWSTYPE}</td>\n";
-		$html .= "<td>{$object->PSOURCE_LONGNAME}</td>\n";
+		$html .= "\n<tr>\n<td>{$object->PWSID}</td>\n<td>{$object->PWS_NAME}</td>\n";
+		$html .= "<td>{$object->ADDRESS_LINE1}</td>\n<td>{$object->ADDRESS_LINE2}</td>\n";
+		$html .= "<td>{$object->EPA_REGION}</td>\n";
+		$html .= "<td>{$object->STATE_CODE}</th>\n<td>{$object->SUBMISSION_STATUS_CODE}</td>\n";
+		$html .= "<td>{$object->PWS_DEACTIVATION_DATE}</td>\n<td>{$object->PWS_TYPE_CODE}</td>\n";
 		$html .= "</tr>\n";
 	}
 	return $html . "</table>\n";
@@ -65,12 +64,12 @@ function resultsToTable($results) {
 </head>
 
 <body>
-<h1>Active Public Water Systems in Rhode Island</h1>
+<h1>First 20 Active Public Water Systems in Rhode Island</h1>
 
 <?php
 
 // set the URL of the data request, and call the functions to consume and display data
-$url = 'http://iaspub.epa.gov/enviro/efservice/PWS/CONTACTSTATE/RI/STATUS/ACTIVE';
+$url = 'https://iaspub.epa.gov/enviro/efservice/WATER_SYSTEM/STATE_CODE/RI/ROWS/0:20';
 $xmlResults = requestData($url);
 
 echo(resultsToTable($xmlResults));
